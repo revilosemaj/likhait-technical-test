@@ -65,3 +65,11 @@ yarn-error.log*
 
 # RSpec
 /backend/.rspec_status
+
+# Ignore everything inside backend/vendor/
+backend/vendor/**/*
+
+# Allow the .keep file to remain tracked
+!backend/vendor/.keep
+CLAUDE.md
+INFRA_FIXES.md

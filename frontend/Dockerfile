@@ -5,8 +5,9 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install
+# Install dependencies — delete the lockfile so npm resolves platform-specific
+# optional deps (e.g. @rollup/rollup-linux-arm64-musl) for the build platform
+RUN rm -f package-lock.json && npm install
 
 # Copy the rest of the application
 COPY . .
