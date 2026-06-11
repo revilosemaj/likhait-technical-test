@@ -40,6 +40,12 @@ RSpec.configure do |config|
   # instead of true.
   config.use_transactional_fixtures = true
 
+  # Rails 7.2 HostAuthorization blocks the default rack-test host (www.example.com).
+  # Use localhost, which is always in the allowed list.
+  config.before(:each, type: :request) do
+    host! "localhost"
+  end
+
   # You can uncomment this line to turn off ActiveRecord support entirely.
   # config.use_active_record = false
 

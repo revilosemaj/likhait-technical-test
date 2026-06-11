@@ -1,6 +1,40 @@
 require 'rails_helper'
 
 RSpec.describe "Api::Categories", type: :request do
+  describe "POST /api/categories" do
+    context "with valid parameter" do
+      it "creates a new category" do
+        expect {
+        post "/api/categories", params: { category: { name: "Groceries" } }, as: :json }.to change(Category, :count).by(1)
+
+        expect(response).to have_http_status(:created)
+        json = JSON.parse(response.body)
+        expect(json["name"]).to eq("Groceries")
+        expect(json["id"]).to be_present
+      end
+    end
+
+    context "with invalid parameter" do
+      it "with empty category name" do
+        post "/api/categories", params: { category: { name: "" } }, as: :json
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        json = JSON.parse(response.body)
+        expect(json["errors"]).to be_present
+      end
+
+      it "when name is a duplicate" do
+        Category.create!(name: "Food")
+
+        post "/api/categories", params: { category: { name: "Food" } }, as: :json
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        json = JSON.parse(response.body)
+        expect(json["errors"]).to be_present
+      end
+    end
+  end
+
   describe "GET /api/categories" do
     let!(:food) { Category.create!(name: "Food") }
     let!(:transport) { Category.create!(name: "Transport") }
